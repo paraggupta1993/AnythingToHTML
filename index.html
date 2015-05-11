@@ -10,22 +10,18 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
-    <section class="page-header">
+    <section id="downloadLinks" class="page-header">
       <h1 class="project-name">Anythingtohtml</h1>
       <h2 class="project-tagline">Online Web App for converting any file format to a downloadable HTML file.</h2>
-      <a href="https://github.com/paraggupta1993/AnythingToHTML" class="btn">View on GitHub</a>
-      <a href="https://github.com/paraggupta1993/AnythingToHTML/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/paraggupta1993/AnythingToHTML/tarball/master" class="btn">Download .tar.gz</a>
+
+      <input type="file" class="btn" id="filefield"/>
+      <input type="submit" id="byBtn" value="Convert" class="btn" onclick="submit()"/>
+
+
     </section>
 
     <section class="main-content">
-      <h3>
-<a id="convert-to-html-" class="anchor" href="#convert-to-html-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Convert To HTML !</h3>
 
-<h3>
-<a id="authors-and-contributors-" class="anchor" href="#authors-and-contributors-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authors and Contributors :</h3>
-
-<p><a href="https://github.com/paraggupta1993" class="user-mention">@paraggupta1993</a> </p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/paraggupta1993/AnythingToHTML">Anythingtohtml</a> is maintained by <a href="https://github.com/paraggupta1993">paraggupta1993</a>.</span>
@@ -35,7 +31,47 @@
 
     </section>
 
-  
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+
+
+  var APP_ID = "7ed85924-1cdd-46ea-9b6d-a9c309061335";
+  function submit(){
+    var file =  document.getElementById("filefield").files[0];
+    var filename = file.name;
+    filename = filename.substring( 0, filename.lastIndexOf('.') );
+    var data = new FormData();
+    data.append('file', file);
+    data.append('apikey', APP_ID);
+    data.append('raw_html', true);
+    console.log(file);
+    $.ajax({
+      url: "https://api.idolondemand.com/1/api/sync/viewdocument/v1",
+      data: data,
+      error: function(jqXHR, textStatus, error){
+        console.log(status);
+      },
+      method: "POST",
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function(data, status, jqXHR){
+        console.log(status);
+        console.log(data);
+        var down = $('<a></a>');
+        down.attr('href', 'data:application/octet-stream;charset=utf-16,' + encodeURIComponent(data));
+        down.attr('download', filename + '.html');
+        down.attr('class','btn');
+        down.html('Download:  ' + filename + '.html');
+        $('#downloadLinks').append( $('<br/>') );
+        $('#downloadLinks').append(down);
+
+      }
+    });
+    return false;
+  }
+</script>
+
   </body>
 </html>
 
