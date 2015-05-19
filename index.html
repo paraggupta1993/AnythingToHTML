@@ -61,6 +61,7 @@
       data.append('apikey', APP_ID);
       data.append('raw_html', true);
       console.log(file);
+      if(ga) ga('send', 'event', 'Conversion', 'Submitted');
       $.ajax({
         url: "https://api.idolondemand.com/1/api/sync/viewdocument/v1",
         data: data,
@@ -80,6 +81,9 @@
           down.attr('download', filename + '.html');
           down.attr('class','btn');
           down.html('Download:  ' + filename + '.html');
+          down.click(function){
+            if(ga) ga('send', 'event', 'Conversion', 'downloaded');
+          }
           $('#downloadLinks').append( $('<br/>') );
           $('#downloadLinks').append(down);
           $('#spinner').hide();
@@ -90,6 +94,7 @@
       });
       return false;
     }
+
   </script>
 
   <script>
