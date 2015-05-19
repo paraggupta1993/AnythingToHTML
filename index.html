@@ -65,6 +65,7 @@
         url: "https://api.idolondemand.com/1/api/sync/viewdocument/v1",
         data: data,
         error: function(jqXHR, textStatus, error){
+          if(ga) ga('send', 'event', 'Conversion', 'fail');
           console.log(status);
         },
         method: "POST",
@@ -84,6 +85,7 @@
           $('#spinner').hide();
           $('#ConvertBtn').show();
           $('#msg').html('');
+          if(ga) ga('send', 'event', 'Conversion', 'successful');
         }
       });
       return false;
