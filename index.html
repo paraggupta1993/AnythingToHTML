@@ -24,7 +24,8 @@
       <h1 class="project-name">Anythingtohtml</h1>
       <h2 class="project-tagline">Free online tool for converting any file format to a downloadable HTML file.</h2>
       <div id="msg"> </div> <br/>
-      <input type="file" class="btn" id="filefield"/>
+      <input type="file" class="btn" id="filefield" style="width:250px"/> <span>Or</span>
+      <input type="text" class="btn" id="urlfield" placeholder='Enter a url' style="width:250px"/> <br>
       <input type="submit" id="ConvertBtn" value="Convert" class="btn"/>
       <img id="spinner" src="./spinner.gif" alt="Working..." style="height:50px;width:50px;vertical-align:top;display:none">
 
@@ -54,21 +55,36 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('#filefield').focus();
+
     $('#ConvertBtn').click(function (){
+
       var file =  document.getElementById("filefield").files[0];
-      if(!file){
-        $('#msg').html("Please select a file !");
-        return false;
-      }
-      $('#spinner').show();
-      $('#ConvertBtn').hide();
-      var filename = file.name;
-      filename = filename.substring( 0, filename.lastIndexOf('.') );
+      var url = $('#urlfield').val();
+      var filename = "";
+
       var data = new FormData();
-      data.append('file', file);
       data.append('apikey', APP_ID);
       data.append('raw_html', true);
-      console.log(file);
+
+      if(file){
+        filename = file.name;
+        filename = filename.substring( 0, filename.lastIndexOf('.') );
+        data.append('file', file);
+        if(ga) ga('send', 'event', 'InputType', 'file');
+      }
+      else if(url != ""){
+        data.append('url', url);
+        if(ga) ga('send', 'event', 'InputType', 'url');
+        filename = url.substring(url.lastIndexOf('/')+1);
+      }
+      else {
+        $('#msg').html("Please select a file or Enter a URL !");
+        return false;
+      }
+
+      $('#spinner').show();
+      $('#ConvertBtn').hide();
+
       if(ga) ga('send', 'event', 'Conversion', 'Submitted');
       $.ajax({
         url: "https://api.idolondemand.com/1/api/sync/viewdocument/v1",
@@ -98,6 +114,7 @@
           $('#ConvertBtn').show();
           $('#msg').html('');
           if(ga) ga('send', 'event', 'Conversion', 'successful');
+          if(ga) ga('send', 'event', 'Filename', filename);
         }
       });
       return false;
